@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // const allowedOrigins = ['http://localhost:3001' , 'http://localhost:3000']; // Website origin
-const allowedOrigins = ['https://adminstore-seven.vercel.app' , 'https://store-2b74.vercel.app']; // Website origin
+const allowedOrigins = ['https://adminstore-seven.vercel.app/' , 'https://store-2b74.vercel.app/']; // Website origin
 
 
 export default function middleware(request) {
