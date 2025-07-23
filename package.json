@@ -1,0 +1,31 @@
+{
+  "name": "my-next-mui-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.2",
+    "@mui/material": "^7.1.2",
+    "cloudinary": "^2.7.0",
+    "cors": "^2.8.5",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.16.0",
+    "multer": "^2.0.1",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.1",
+    "typescript": "5.8.3"
+  }
+}
