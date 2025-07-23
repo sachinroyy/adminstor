@@ -45,7 +45,9 @@ import {
   ExpandMore as ExpandMoreIcon
 } from '@mui/icons-material';
 
-const drawerWidth = 280;
+const drawerWidth =280;
+
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -65,6 +67,7 @@ const Search = styled('div')(({ theme }) => ({
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
+  
   height: '100%',
   position: 'absolute',
   pointerEvents: 'none',
@@ -217,7 +220,7 @@ export default function DashboardLayout({ children }) {
           <Typography
             variant="caption"
             sx={{
-              px: 3,
+                px: 3,
               py: 1,
               color: 'text.secondary',
               fontWeight: 'medium',
@@ -297,7 +300,7 @@ export default function DashboardLayout({ children }) {
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', }}>
       <AppBar
         position="fixed"
         sx={{
@@ -373,9 +376,8 @@ export default function DashboardLayout({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          // p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          marginLeft: { sm: `${drawerWidth}px` },
           marginTop: '64px', // Height of the AppBar
         }}
       >

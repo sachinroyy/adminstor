@@ -1,13 +1,9 @@
-import DashboardLayout from "./Deshboard/layout";
+import { redirect } from 'next/navigation';
+
 export default function Home() {
-  return (
-    <DashboardLayout>
-      
-    </DashboardLayout>
-  );
-}   
-
-
-
-
-///USING REDIRECT DESKBOARD FUNCNILITY 
+  // Redirect to dashboard on page load
+  redirect('/Deshboard/deshboard');
+  
+  // This return won't be reached due to the redirect
+  return null;
+}

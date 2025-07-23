@@ -15,6 +15,7 @@
     "@mui/material": "^7.1.2",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
+    "framer-motion": "^12.23.7",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.0",
     "multer": "^2.0.1",

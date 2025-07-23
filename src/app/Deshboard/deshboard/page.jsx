@@ -70,13 +70,28 @@ const DashboardPage = () => {
   ];
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
+    <Box sx={{ 
+      width: '100%',
+      minHeight: '100vh',
+      p: { xs: 1, sm: 2, md: 3 },
+      backgroundColor: '#f8f9fc',
+      boxSizing: 'border-box',  
+      // border: '10px solid rgb(224, 98, 14)',
+    }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'stretch', sm: 'center' }, 
+        mb: 4,
+        gap: 2,
+        // border: '10px solid rgb(224, 98, 14)',
+      }}>
         <Typography variant="h5" component="h1" sx={{ fontWeight: 600, color: '#5a5c69' }}>
           Dashboard
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 ,}}>
           <TextField
             size="small"
             placeholder="Search for..."
@@ -105,14 +120,21 @@ const DashboardPage = () => {
       </Box>
 
       {/* Stats Cards */}
-      <Grid container spacing={4} sx={{ mb: 4 }}>
+      <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ mb: 4, width: '100%' }}>
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid item xs={12} sm={6} lg={3} key={index} sx={{ display: 'flex' }}>
             <Card 
+              elevation={3}
               sx={{ 
-                borderRadius: '0.35rem',
+                borderRadius: '0.75rem',
                 borderLeft: `0.25rem solid ${stat.bgColor}`,
-                height: '100%'
+                height: '100%',
+                width: '100%',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+                }
               }}
             >
               <CardContent>
@@ -181,19 +203,31 @@ const DashboardPage = () => {
       </Grid>
 
       {/* Main Content */}
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ width: '100%' }}>
         {/* Earnings Overview */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} lg={8}>
           <Paper 
-            elevation={0} 
+            elevation={3}
             sx={{ 
-              p: 3, 
-              borderRadius: '0.35rem',
-              border: '1px solid #e3e6f0',
-              height: '100%'
+              p: { xs: 2, sm: 3 },
+              width: '530px',
+              borderRadius: '0.75rem',
+              height: '100%',
+              backgroundColor: 'background.paper',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              '&:hover': {
+                boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+              }
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between', 
+              alignItems: { xs: 'flex-start', sm: 'center' }, 
+              mb: 3,
+              gap: 1
+            }}>
               <Typography variant="h6" sx={{ color: '#4e73df', fontWeight: 700 }}>
                 Earnings Overview
               </Typography>
@@ -219,18 +253,23 @@ const DashboardPage = () => {
         {/* Tasks */}
         <Grid item xs={12} md={4}>
           <Paper 
-            elevation={0} 
+            elevation={3}
             sx={{ 
-              p: 3, 
-              borderRadius: '0.35rem',
-              border: '1px solid #e3e6f0',
-              height: '100%'
+              width: '535px',
+              p: { xs: 2, sm: 3 },
+              borderRadius: '0.75rem',
+              height: '100%',
+              backgroundColor: 'background.paper',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+              '&:hover': {
+                boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
+              }
             }}
           >
             <Typography variant="h6" sx={{ color: '#4e73df', fontWeight: 700, mb: 3 }}>
               Tasks
             </Typography>
-            <Stack spacing={2}>
+            <Stack spacing={2} >
               {['Update new about page', 'Design wireframes', 'Create new database', 'Send meeting notes'].map((task, index) => (
                 <Box key={index} sx={{ display: 'flex', alignItems: 'center' }}>
                   <Box sx={{ 
