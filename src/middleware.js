@@ -10,26 +10,24 @@ export default function middleware(request) {
   console.log('Request Origin:', origin);
   console.log('Allowed Origins:', allowedOrigins);
 
+  // Always set the header, but only allow credentials for allowed origins
   if (origin && allowedOrigins.includes(origin)) {
     response.headers.set('Access-Control-Allow-Origin', origin);
     response.headers.set('Access-Control-Allow-Credentials', 'true');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  } else {
+  } else if (origin) {
+    response.headers.set('Access-Control-Allow-Origin', 'null');
+    response.headers.delete('Access-Control-Allow-Credentials');
     console.log('Origin not allowed:', origin);
   }
 
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
   // Preflight OPTIONS request
   if (request.method === 'OPTIONS') {
-
     return new NextResponse(null, {
       status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': origin || '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Credentials': 'true',
-      },
+      headers: response.headers,
     });
   }
 
