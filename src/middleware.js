@@ -7,12 +7,16 @@ const allowedOrigins = ['https://adminstore-seven.vercel.app' , 'https://store-2
 export default function middleware(request) {
   const origin = request.headers.get('origin');
   const response = NextResponse.next();
- console.log(origin)
+  console.log('Request Origin:', origin);
+  console.log('Allowed Origins:', allowedOrigins);
+
   if (origin && allowedOrigins.includes(origin)) {
     response.headers.set('Access-Control-Allow-Origin', origin);
     response.headers.set('Access-Control-Allow-Credentials', 'true');
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  } else {
+    console.log('Origin not allowed:', origin);
   }
 
   // Preflight OPTIONS request
