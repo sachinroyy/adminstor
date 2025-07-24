@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Drawer,
@@ -188,6 +189,27 @@ const menuItems = [
 export default function DashboardLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 600);
+    };
+    
+    // Set initial value
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   // Function to handle navigation
   const handleNavigation = (path) => {
@@ -300,7 +322,7 @@ export default function DashboardLayout({ children }) {
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <AppBar
         position="fixed"
         sx={{
@@ -312,6 +334,15 @@ export default function DashboardLayout({ children }) {
         }}
       >
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold', paddingLeft: '46px' }}>
             Overview
           </Typography>
@@ -356,21 +387,31 @@ export default function DashboardLayout({ children }) {
         </Toolbar>
       </AppBar>
       
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            borderRight: 'none',
-            boxShadow: '0 0 10px rgba(0,0,0,0.05)',
-          },
-        }}
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
       >
-        {drawer}
-      </Drawer>
+        <Drawer
+          variant={isMobile ? 'temporary' : 'permanent'}
+          open={isMobile ? mobileOpen : true}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: 'block', sm: 'block' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              borderRight: 'none',
+              boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
       
       <Box
         component="main"

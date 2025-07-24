@@ -22,8 +22,19 @@ import {
   Paper,
   CircularProgress,
   TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Fab,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 const modalStyle = {
   position: 'absolute',
@@ -38,14 +49,20 @@ const modalStyle = {
 };
 
 export default function AdminPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
   
   const [form, setForm] = useState({
+    _id: '',
     name: '',
     description: '',
     price: '',
@@ -128,10 +145,40 @@ export default function AdminPage() {
     setPage(0);
   };
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setEditingProduct(null);
+    setForm({ _id: '', name: '', description: '', price: '', categories: [], image: '' });
+    setImagePreview('');
+    setOpen(true);
+  };
+
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setForm({
+      _id: product._id,
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      categories: product.categories,
+      image: product.image || ''
+    });
+    setImagePreview(product.image || '');
+    setOpen(true);
+  };
+
+  const handleDeleteClick = (product) => {
+    setProductToDelete(product);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setProductToDelete(null);
+  };
+
   const handleClose = () => {
     setOpen(false);
-    setForm({ name: '', description: '', price: '', categories: [], image: '' });
+    setForm({ _id: '', name: '', description: '', price: '', categories: [], image: '' });
     setImagePreview('');
   };
 
@@ -180,8 +227,12 @@ export default function AdminPage() {
     }
     
     try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
+      const isEditing = !!form._id;
+      const method = isEditing ? 'PUT' : 'POST';
+      const url = isEditing ? '/api/products' : '/api/products';
+      
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
@@ -192,7 +243,7 @@ export default function AdminPage() {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to add product');
+        throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'add'} product`);
       }
       
       // Refresh the products list
@@ -203,12 +254,44 @@ export default function AdminPage() {
         setProducts(productsData.data || []);
       }
       
-      alert('Product added successfully!');
+      alert(`Product ${isEditing ? 'updated' : 'added'} successfully!`);
       handleClose();
       
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert(`Error: ${error.message || 'Failed to add product'}`);
+      alert(`Error: ${error.message || 'Failed to save product'}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!productToDelete) return;
+    
+    try {
+      const response = await fetch(`/api/products?id=${productToDelete._id}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete product');
+      }
+      
+      // Refresh the products list
+      const productsResponse = await fetch('/api/products');
+      const productsData = await productsResponse.json();
+      
+      if (productsData.success) {
+        setProducts(productsData.data || []);
+      }
+      
+      alert('Product deleted successfully!');
+      
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert(`Error: ${error.message || 'Failed to delete product'}`);
+    } finally {
+      handleCloseDeleteDialog();
     }
   };
 
@@ -263,10 +346,20 @@ export default function AdminPage() {
                             padding: '4px 8px',
                             borderRadius: '4px',
                             display: 'inline-block',
-                            fontSize: '0.9em'
+                            fontSize: '0.9em',
+                            marginRight: '8px',
+                            marginBottom: '4px'
                           }}>
                             {getCategoryNames(product.categories)}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton onClick={() => handleEdit(product)} color="primary" aria-label="edit">
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton onClick={() => handleDeleteClick(product)} color="error" aria-label="delete">
+                            <DeleteIcon />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     ))
@@ -292,10 +385,34 @@ export default function AdminPage() {
           />
         </>
       )}
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Delete Product
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete "{productToDelete?.name}"? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
+          <Button onClick={handleDelete} color="error" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Add/Edit Product Modal */}
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle}>
           <Typography variant="h6" textAlign="center" mb={2}>
-            Add New Product
+            {editingProduct ? 'Edit Product' : 'Add New Product'}
           </Typography>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -403,6 +520,24 @@ export default function AdminPage() {
           </form>
         </Box>
       </Modal>
+
+      {/* Floating Action Button for Mobile */}
+      {isMobile && (
+        <Fab
+          color="primary"
+          aria-label="add product"
+          onClick={handleOpen}
+          sx={{
+            position: 'fixed',
+            bottom: 24,
+            right: 24,
+            display: { xs: 'flex', sm: 'none' },
+            zIndex: 1200,
+          }}
+        >
+          <AddIcon />
+        </Fab>
+      )}
     </Box>
   );
 }
