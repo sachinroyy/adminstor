@@ -88,41 +88,31 @@ const DashboardPage = () => {
         gap: 2,
         // border: '10px solid rgb(224, 98, 14)',
       }}>
-        <Typography variant="h5" component="h1" sx={{ fontWeight: 600, color: '#5a5c69' }}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 600, color: '#5a5c69' ,paddingLeft: '46px' }}>
           Dashboard
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 ,}}>
-          <TextField
-            size="small"
-            placeholder="Search for..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              sx: { 
-                borderRadius: '0.35rem',
-                backgroundColor: '#f8f9fc',
-                '& fieldset': { border: 'none' }
-              }
-            }}
-          />
-          <IconButton>
-            <Badge badgeContent={3} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <Avatar sx={{ bgcolor: '#4e73df' }}>
-            <PersonIcon />
-          </Avatar>
-        </Box>
+        
       </Box>
 
       {/* Stats Cards */}
-      <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ mb: 4, width: '100%' }}>
+      <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ 
+        pl: 4,
+        pr: 26,
+        mb: 4, 
+        width: '100%',
+        display: 'flex',
+        justifyContent: { xs: 'left', sm: 'flex-start' },
+        alignItems: 'left',
+        flexDirection: { xs: 'column', sm: 'row' },
+        '& > .MuiGrid-item': {
+          maxWidth: { xs: '100%', sm: 'calc(50% - 16px)', lg: 'calc(25% - 24px)' },
+          flexBasis: { xs: '100%', sm: 'calc(50% - 16px)', lg: 'calc(25% - 24px)' },
+          display: 'flex',
+          justifyContent: 'center'
+        }
+      }}>
         {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} lg={3} key={index} sx={{ display: 'flex' }}>
+          <Grid item key={index} sx={{ display: 'flex', justifyContent: 'center' }}>
             <Card 
               elevation={3}
               sx={{ 

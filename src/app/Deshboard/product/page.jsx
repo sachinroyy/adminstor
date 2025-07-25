@@ -526,6 +526,8 @@ export default function AdminPage() {
         <Fab
           color="primary"
           aria-label="add product"
+          variant="extended"
+
           onClick={handleOpen}
           sx={{
             position: 'fixed',
@@ -534,8 +536,10 @@ export default function AdminPage() {
             display: { xs: 'flex', sm: 'none' },
             zIndex: 1200,
           }}
+          
         >
           <AddIcon />
+          Add Product
         </Fab>
       )}
     </Box>

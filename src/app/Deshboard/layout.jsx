@@ -218,7 +218,18 @@ export default function DashboardLayout({ children }) {
 
   const drawer = (
     <div>
-      <Box sx={{ p: 3, display: 'flex', alignItems: 'center' }}>
+      <Box 
+        sx={{ 
+          p: 3, 
+          display: 'flex', 
+          alignItems: 'center',
+          cursor: 'pointer',
+          '&:hover': {
+            opacity: 0.8
+          }
+        }}
+        onClick={() => handleNavigation('/Deshboard/deshboard')}
+      >
         <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
           <img src="/images/logo.jpg" alt="logo" width={40} height={40} style={{ borderRadius: '50%' }} />
           JinStore
@@ -343,19 +354,11 @@ export default function DashboardLayout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold', paddingLeft: '46px' }}>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold', paddingLeft: '10px' }}>
             Overview
           </Typography>
           
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
+          
           
           <IconButton color="inherit">
             <Badge badgeContent={4} color="error">
@@ -363,27 +366,7 @@ export default function DashboardLayout({ children }) {
             </Badge>
           </IconButton>
           
-          <IconButton color="inherit" sx={{ mr: 1 }}>
-            <ShoppingCartIcon />
-          </IconButton>
           
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            sx={{
-              ml: 1,
-              textTransform: 'none',
-              borderRadius: 2,
-              boxShadow: 'none',
-              backgroundColor: 'black',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: '#333',
-              },
-            }}
-          >
-           profile
-          </Button>
         </Toolbar>
       </AppBar>
       
