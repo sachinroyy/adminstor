@@ -5,38 +5,52 @@ import Product from '../../../models/product';
 import cloudinary from '../../../components/cloudnary/cloudnary';
 import { Types } from 'mongoose';
 
+// Helper function to create error response
+const createErrorResponse = (message, status = 400) => {
+  return NextResponse.json(
+    { success: false, error: message },
+    { status, headers: { 'Content-Type': 'application/json' } }
+  );
+};
+
+// Helper function to create success response
+const createSuccessResponse = (data, status = 200) => {
+  return NextResponse.json(
+    { success: true, data },
+    { status, headers: { 'Content-Type': 'application/json' } }
+  );
+};
+
 export async function POST(request) {
   try {
     await dbConnect();
-    const body = await request.json();
+    let body = await request.json();
+
+    // Create a clean copy of the body without _id for new products
+    const { _id, ...productData } = body;
 
     // Check if image is base64
     let imageUrl = '';
-    if (body.image?.startsWith('data:image')) {
-      const uploadRes = await cloudinary.uploader.upload(body.image, {
+    if (productData.image?.startsWith('data:image')) {
+      const uploadRes = await cloudinary.uploader.upload(productData.image, {
         folder: 'products',
       });
       imageUrl = uploadRes.secure_url;
     }
 
+    // Create the product without explicitly setting _id
     const product = await Product.create({
-      ...body,
-      image: imageUrl, // store Cloudinary image URL
+      ...productData,
+      image: imageUrl || productData.image,
     });
 
-    return NextResponse.json(
-      { success: true, data: product },
-      { status: 201 }
-    );
+    return createSuccessResponse(product, 201);
   } catch (error) {
     console.error('DB Create Error:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: error.message || 'Failed to create product',
-        details: error.errors ? Object.values(error.errors).map(e => e.message) : null
-      },
-      { status: 400 }
+    console.error('Error creating product:', error);
+    return createErrorResponse(
+      error.message || 'Failed to create product',
+      error.name === 'ValidationError' ? 400 : 500
     );
   }
 }
@@ -79,8 +93,7 @@ export async function GET(request) {
       .skip(skip)
       .limit(limit);
 
-    return NextResponse.json({
-      success: true,
+    return createSuccessResponse({
       data: products,
       pagination: {
         total,
@@ -92,12 +105,7 @@ export async function GET(request) {
 
   } catch (error) {
     console.error('Error fetching products:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: error.message || 'Failed to fetch products'
-      },
-      { status: 500 }
-    );
+    console.error('Error fetching products:', error);
+    return createErrorResponse('Failed to fetch products', 500);
   }
 }
